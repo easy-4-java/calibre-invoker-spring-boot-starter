@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,7 +20,7 @@ package org.apache.maven.spring.boot.options;
  * Launch the calibre edit book tool. You can optionally also specify the names 
  * of files inside the book which will be opened for editing automatically.</p>
  * https://manual.calibre-ebook.com/generated/en/ebook-edit.html
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author 		： <a href="https://github.com/easy-4-java">hiwepy</a>
  */
 public class EbookEditOptions {
 	
