@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
+ * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,7 +23,7 @@ package org.apache.maven.spring.boot.options;
  * <p>You should use this tool as the last step in your e-book creation process.</p>
  * <p>Note that polishing only works on files in the AZW3 or EPUB formats.</p>
  * https://manual.calibre-ebook.com/generated/en/ebook-polish.html
- * @author ： <a href="https://github.com/easy-4-java">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class EbookPolishOptions {
 
