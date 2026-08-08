@@ -19,8 +19,9 @@ package org.apache.maven.spring.boot.options;
  * Fetch book metadata from online sources. You must specify at least one of
  * title, authors or ISBN.
  * https://manual.calibre-ebook.com/generated/en/lrf2lrs.html
- * 
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class FetchEbookMetadataOptions {
 

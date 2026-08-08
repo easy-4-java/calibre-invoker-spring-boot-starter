@@ -47,6 +47,7 @@ package org.apache.maven.spring.boot.options;
  * </p>
  * https://manual.calibre-ebook.com/generated/en/ebook-convert.html
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class EbookConvertOptions {
 

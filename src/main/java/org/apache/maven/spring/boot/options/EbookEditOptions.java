@@ -21,6 +21,7 @@ package org.apache.maven.spring.boot.options;
  * of files inside the book which will be opened for editing automatically.</p>
  * https://manual.calibre-ebook.com/generated/en/ebook-edit.html
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class EbookEditOptions {
 	

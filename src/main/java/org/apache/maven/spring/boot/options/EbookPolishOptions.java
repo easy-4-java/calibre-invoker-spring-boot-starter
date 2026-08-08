@@ -24,6 +24,7 @@ package org.apache.maven.spring.boot.options;
  * <p>Note that polishing only works on files in the AZW3 or EPUB formats.</p>
  * https://manual.calibre-ebook.com/generated/en/ebook-polish.html
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class EbookPolishOptions {
 

@@ -35,8 +35,9 @@ package org.apache.maven.spring.boot.options;
  * silently ignored.
  * </p>
  * https://manual.calibre-ebook.com/generated/en/ebook-meta.html
- * 
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class EbookMetaOptions {
 

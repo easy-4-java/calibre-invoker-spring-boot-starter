@@ -16,29 +16,47 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+/**
+ * Auto-configuration that wires the Maven {@link Invoker} infrastructure: output and error handlers,
+ * an invoker logger, a configured {@link DefaultInvoker} and the {@link CalibreInvokerTemplate} helper.
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnClass({ DefaultInvoker.class })
 @EnableConfigurationProperties({ CalibreInvokerProperties.class })
 public class CalibreInvokerConfiguration {
 
+	/** Provide a default standard-output {@link InvocationOutputHandler} unless one already exists. @return a SystemOutHandler */
 	@Bean
 	@ConditionalOnMissingBean
 	public InvocationOutputHandler outputHandler() {
 		return new SystemOutHandler();
 	}
 
+	/** Provide a default error-output {@link InvocationOutputHandler} unless one already exists. @return a PrintStreamHandler writing to stderr */
 	@Bean
 	@ConditionalOnMissingBean
 	public InvocationOutputHandler errorHandler() {
 		return new PrintStreamHandler(System.err, false);
 	}
 
+	/** Provide a default {@link InvokerLogger} unless one already exists. @return a SystemOutLogger */
 	@Bean
 	@ConditionalOnMissingBean
 	public InvokerLogger invokerLogger() {
 		return new SystemOutLogger();
 	}
 
+	/**
+	 * Create the {@link Invoker} bean, configuring local repository, Maven executable, Maven home,
+	 * output/error handlers and logger from the provided properties.
+	 * @param outputHandler standard output handler
+	 * @param errorHandler error output handler
+	 * @param invokerLogger invoker logger
+	 * @param properties invoker properties
+	 * @return a configured Maven invoker
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public Invoker mavenInvoker(InvocationOutputHandler outputHandler, InvocationOutputHandler errorHandler,
@@ -78,6 +96,7 @@ public class CalibreInvokerConfiguration {
 		return invoker;
 	}
 
+	/** Create the {@link CalibreInvokerTemplate} bean wiring the handlers, invoker and properties. @param outputHandler standard output handler @param errorHandler error output handler @param mavenInvoker Maven invoker @param invokerProperties invoker properties @return a CalibreInvokerTemplate */
 	@Bean
 	public CalibreInvokerTemplate mavenInvokerTemplate(InvocationOutputHandler outputHandler,
 			InvocationOutputHandler errorHandler, Invoker mavenInvoker, CalibreInvokerProperties invokerProperties) {

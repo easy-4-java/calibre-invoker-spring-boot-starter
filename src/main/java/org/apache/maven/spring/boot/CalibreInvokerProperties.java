@@ -29,9 +29,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
 /**
- * Calibre Invoker 参数配置
- * 
+ * Configuration properties for the Calibre/Maven invoker, bound to the {@code maven.invoker.*} prefix.
+ * <p>Captures Maven invocation options (offline mode, debug, batch mode, profiles, reactor behaviour,
+ * checksum policy, threads, etc.) as well as Calibre-specific flags, and can build a ready-to-use
+ * {@link InvocationRequest} via {@link #newRequest()}.</p>
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @ConfigurationProperties(CalibreInvokerProperties.PREFIX)
 public class CalibreInvokerProperties {
@@ -470,6 +473,7 @@ public class CalibreInvokerProperties {
 		this.userSettings = userSettings;
 	}
 
+	/** Build a new {@link InvocationRequest} populated from the current property values. @return a configured Maven invocation request */
 	public InvocationRequest newRequest() {
 
 		InvocationRequest request = new DefaultInvocationRequest();

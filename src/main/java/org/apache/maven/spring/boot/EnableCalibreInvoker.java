@@ -25,8 +25,9 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 
 /**
- * 代理模式的Maven集成
+ * Enables the Calibre/Maven invoker integration by importing {@link CalibreInvokerConfiguration}.
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
