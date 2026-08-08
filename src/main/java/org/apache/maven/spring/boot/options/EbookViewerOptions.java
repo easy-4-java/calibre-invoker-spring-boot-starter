@@ -18,7 +18,7 @@ package org.apache.maven.spring.boot.options;
 /**
  * View an e-book.
  * https://manual.calibre-ebook.com/generated/en/ebook-viewer.html
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class EbookViewerOptions {
 
