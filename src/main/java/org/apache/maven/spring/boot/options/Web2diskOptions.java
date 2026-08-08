@@ -17,7 +17,7 @@ package org.apache.maven.spring.boot.options;
 
 /**
  * https://manual.calibre-ebook.com/generated/en/web2disk.html
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class Web2diskOptions {
 

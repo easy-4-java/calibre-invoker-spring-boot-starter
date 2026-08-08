@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
 /**
  * 基于Maven Invoker的Maven build实现，依赖于本机环境中的Maven环境
  * 
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class CalibreInvokerTemplate {
 
