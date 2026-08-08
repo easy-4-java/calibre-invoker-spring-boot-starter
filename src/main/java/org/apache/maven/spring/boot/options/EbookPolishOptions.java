@@ -23,7 +23,7 @@ package org.apache.maven.spring.boot.options;
  * <p>You should use this tool as the last step in your e-book creation process.</p>
  * <p>Note that polishing only works on files in the AZW3 or EPUB formats.</p>
  * https://manual.calibre-ebook.com/generated/en/ebook-polish.html
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class EbookPolishOptions {
 

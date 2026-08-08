@@ -46,7 +46,7 @@ package org.apache.maven.spring.boot.options;
  * then use the -h option.
  * </p>
  * https://manual.calibre-ebook.com/generated/en/ebook-convert.html
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class EbookConvertOptions {
 
