@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 /**
  * Calibre Invoker 参数配置
  * 
- * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @ConfigurationProperties(CalibreInvokerProperties.PREFIX)
 public class CalibreInvokerProperties {
