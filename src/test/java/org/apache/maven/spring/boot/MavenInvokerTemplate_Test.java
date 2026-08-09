@@ -15,29 +15,47 @@
  */
 package org.apache.maven.spring.boot;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.apache.commons.io.FileUtils;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+
+import org.apache.maven.model.Model;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
+import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.InvokerLogger;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.apache.maven.shared.invoker.PrintStreamHandler;
 import org.apache.maven.shared.invoker.SystemOutHandler;
 import org.apache.maven.shared.invoker.SystemOutLogger;
+import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.util.StringUtils;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * https://www.sourcetrail.com/blog/how_to_integrate_maven_into_your_own_java_tool/
+ * Tests for {@link CalibreInvokerTemplate}.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class MavenInvokerTemplate_Test {
 
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	InvocationOutputHandler outputHandler = new SystemOutHandler();
 	InvocationOutputHandler errorHandler = new PrintStreamHandler(System.err, false);
-	InvokerLogger invokerLogger = new SystemOutLogger();
 
 	public Invoker mavenInvoker(CalibreInvokerProperties properties) {
 
@@ -47,7 +65,7 @@ public class MavenInvokerTemplate_Test {
 		invoker.setErrorHandler(errorHandler);
 		// Sets the path to the base directory of the local repository to use for the
 		// Maven invocation.
-		if (StringUtils.hasText(properties.getLocalRepository())) {
+		if (properties.getLocalRepository() != null && !properties.getLocalRepository().isEmpty()) {
 			File localRepositoryDirectory = new File(properties.getLocalRepository());
 			if (localRepositoryDirectory.exists() && localRepositoryDirectory.isDirectory()) {
 				invoker.setLocalRepositoryDirectory(localRepositoryDirectory);
@@ -56,7 +74,7 @@ public class MavenInvokerTemplate_Test {
 				invoker.setLocalRepositoryDirectory(localRepositoryDirectory);
 			}
 		} else {
-			File localRepositoryDirectory = new File(FileUtils.getUserDirectory(),
+			File localRepositoryDirectory = new File(System.getProperty("user.home"),
 					".m2" + File.separator + "repository");
 			if (!localRepositoryDirectory.exists()) {
 				localRepositoryDirectory.mkdir();
@@ -64,14 +82,14 @@ public class MavenInvokerTemplate_Test {
 			invoker.setLocalRepositoryDirectory(localRepositoryDirectory);
 		}
 		// Sets the logger used by this invoker to output diagnostic messages.
-		invoker.setLogger(invokerLogger);
+		invoker.setLogger(new SystemOutLogger());
 		//
-		if (StringUtils.hasText(properties.getMavenExecutable())) {
+		if (properties.getMavenExecutable() != null && !properties.getMavenExecutable().isEmpty()) {
 			invoker.setMavenExecutable(new File(properties.getMavenExecutable()));
 		}
 		// Sets the path to the base directory of the Maven installation used to invoke
 		// Maven.
-		if (StringUtils.hasText(properties.getMavenHome())) {
+		if (properties.getMavenHome() != null && !properties.getMavenHome().isEmpty()) {
 			invoker.setMavenHome(new File(properties.getMavenHome()));
 		}
 		// Sets the handler used to capture the standard output from the Maven build.
@@ -81,60 +99,231 @@ public class MavenInvokerTemplate_Test {
 	}
 
 	@Test
-	public void testInstall() throws MavenInvocationException {
+	public void testInstallWithMockedInvoker() throws MavenInvocationException {
+
+		Invoker mockInvoker = mock(Invoker.class);
+		InvocationResult mockResult = mock(InvocationResult.class);
+		when(mockResult.getExitCode()).thenReturn(0);
+		when(mockInvoker.execute(any(InvocationRequest.class))).thenReturn(mockResult);
 
 		CalibreInvokerProperties properties = new CalibreInvokerProperties();
 		properties.setNonPluginUpdates(true);
 		properties.setUpdateSnapshots(false);
-		properties.setMavenHome("D:\\Java\\maven\\apache-maven-3.5.3");
-		properties.setLocalRepository("E:\\Java\\.m2\\repository");
 
-		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mavenInvoker(properties),
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker,
 				properties);
 
-		// InvocationResult result = template.install("D:\\", "p6spy-3.7.0.jar", "p6spy", "p6spy", "3.7.0-xx", "jar", true, true);
-		InvocationResult result = template.install( "D:\\p6spy-3.7.0.jar", "p6spy", "p6spy", "3.7.0-xx", "jar", true, true);
+		InvocationResult result = template.install("/tmp/test.jar", "test.group", "test-artifact", "1.0.0", "jar", true, true);
 
-		System.out.println("ExitCode:" + result.getExitCode());
-
+		assertNotNull(result);
+		assertEquals(0, result.getExitCode());
+		verify(mockInvoker).execute(any(InvocationRequest.class));
 	}
 
-	// @Test
-	public void testDeploy() throws MavenInvocationException {
+	@Test
+	public void testInstallWithBasedirAndMockedInvoker() throws MavenInvocationException {
+
+		Invoker mockInvoker = mock(Invoker.class);
+		InvocationResult mockResult = mock(InvocationResult.class);
+		when(mockResult.getExitCode()).thenReturn(0);
+		when(mockInvoker.execute(any(InvocationRequest.class))).thenReturn(mockResult);
+
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		properties.setNonPluginUpdates(true);
+		properties.setUpdateSnapshots(false);
+
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker,
+				properties);
+
+		InvocationResult result = template.install("/tmp", "/tmp/test.jar", "test.group", "test-artifact", "1.0.0", "jar", true, true);
+
+		assertNotNull(result);
+		assertEquals(0, result.getExitCode());
+		verify(mockInvoker).execute(any(InvocationRequest.class));
+	}
+
+	@Test
+	public void testDeployWithMockedInvoker() throws MavenInvocationException {
+
+		Invoker mockInvoker = mock(Invoker.class);
+		InvocationResult mockResult = mock(InvocationResult.class);
+		when(mockResult.getExitCode()).thenReturn(0);
+		when(mockInvoker.execute(any(InvocationRequest.class))).thenReturn(mockResult);
 
 		CalibreInvokerProperties properties = new CalibreInvokerProperties();
 
-		properties.setMavenHome("D:\\Java\\maven\\apache-maven-3.5.3");
-
-		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mavenInvoker(properties),
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker,
 				properties);
-		
-		InvocationResult result = template.deploy("D:\\", "D:\\p6spy-3.7.0.jar", "p6spy", "p6spy", "3.7.0-xx", "jar", 
-				"-Durl=http://127.0.0.1:8082/nexus/content/repositories/thirdparty/", "-DrepositoryId=thirdparty");
-		
-		/*InvocationResult result = template.deploy("D:\\p6spy-3.7.0.jar", "p6spy", "p6spy", "D:\\3.7.0-xx", "jar", 
-				"-Durl=http://127.0.0.1:8082/nexus/content/repositories/thirdparty/", "thirdparty");*/
 
-		System.out.println("ExitCode:" + result.getExitCode());
+		InvocationResult result = template.deploy("/tmp/test.jar", "test.group", "test-artifact", "1.0.0", "jar",
+				"http://localhost:8081/releases", "releases");
 
+		assertNotNull(result);
+		assertEquals(0, result.getExitCode());
+		verify(mockInvoker).execute(any(InvocationRequest.class));
 	}
 
-	public void testExecute() throws MavenInvocationException {
+	@Test
+	public void testDeployWithBasedirAndMockedInvoker() throws MavenInvocationException {
+
+		Invoker mockInvoker = mock(Invoker.class);
+		InvocationResult mockResult = mock(InvocationResult.class);
+		when(mockResult.getExitCode()).thenReturn(0);
+		when(mockInvoker.execute(any(InvocationRequest.class))).thenReturn(mockResult);
 
 		CalibreInvokerProperties properties = new CalibreInvokerProperties();
 
-		properties.setMavenHome("D:\\Java\\maven\\apache-maven-3.5.3");
-
-		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mavenInvoker(properties),
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker,
 				properties);
 
-		InvocationResult result = template.execute("D:\\", "deploy:deploy-file", "-DgroupId=p6spy",
-				"-DartifactId=p6spy", "-Dversion=3.7.0-xx", "-Dpackaging=jar", "-Dfile=p6spy-3.7.0.jar",
-				"-Durl=http://10.71.19.153:8081/nexus/content/repositories/thirdparty/",
-				"-DrepositoryId=nexus-thirdparty");
+		InvocationResult result = template.deploy("/tmp", "/tmp/test.jar", "test.group", "test-artifact", "1.0.0", "jar",
+				"http://localhost:8081/releases", "releases");
 
-		System.out.println("ExitCode:" + result.getExitCode());
+		assertNotNull(result);
+		assertEquals(0, result.getExitCode());
+		verify(mockInvoker).execute(any(InvocationRequest.class));
+	}
 
+	@Test
+	public void testExecuteWithBasedirFileAndMockedInvoker() throws MavenInvocationException {
+
+		Invoker mockInvoker = mock(Invoker.class);
+		InvocationResult mockResult = mock(InvocationResult.class);
+		when(mockResult.getExitCode()).thenReturn(0);
+		when(mockInvoker.execute(any(InvocationRequest.class))).thenReturn(mockResult);
+
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker,
+				properties);
+
+		InvocationResult result = template.execute(new File("/tmp"), "clean", "install");
+
+		assertNotNull(result);
+		assertEquals(0, result.getExitCode());
+		verify(mockInvoker).execute(any(InvocationRequest.class));
+	}
+
+	@Test
+	public void testExecuteWithBasedirStringAndMockedInvoker() throws MavenInvocationException {
+
+		Invoker mockInvoker = mock(Invoker.class);
+		InvocationResult mockResult = mock(InvocationResult.class);
+		when(mockResult.getExitCode()).thenReturn(0);
+		when(mockInvoker.execute(any(InvocationRequest.class))).thenReturn(mockResult);
+
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker,
+				properties);
+
+		InvocationResult result = template.execute("/tmp", "clean", "install");
+
+		assertNotNull(result);
+		assertEquals(0, result.getExitCode());
+		verify(mockInvoker).execute(any(InvocationRequest.class));
+	}
+
+	@Test
+	public void testReadModel() throws Exception {
+		// Create a minimal JAR with a pom.xml inside META-INF/maven/
+		File jarFile = tempFolder.newFile("test-artifact-1.0.0.jar");
+		try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile))) {
+			// Add pom.xml entry
+			jos.putNextEntry(new JarEntry("META-INF/maven/io.github.easy4j/test-artifact/pom.xml"));
+			String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+					+ "<project>\n"
+					+ "  <modelVersion>4.0.0</modelVersion>\n"
+					+ "  <groupId>io.github.easy4j</groupId>\n"
+					+ "  <artifactId>test-artifact</artifactId>\n"
+					+ "  <version>1.0.0</version>\n"
+					+ "</project>\n";
+			jos.write(pomXml.getBytes());
+			jos.closeEntry();
+		}
+
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		Invoker invoker = new DefaultInvoker();
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, invoker, properties);
+
+		Model model = template.readModel(jarFile);
+		assertNotNull(model);
+		assertEquals("io.github.easy4j", model.getGroupId());
+		assertEquals("test-artifact", model.getArtifactId());
+		assertEquals("1.0.0", model.getVersion());
+	}
+
+	@Test
+	public void testReadModelThrowsIOExceptionForEmptyJar() throws Exception {
+		// Create a JAR with no pom.xml
+		File jarFile = tempFolder.newFile("empty.jar");
+		try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile))) {
+			jos.putNextEntry(new JarEntry("dummy.txt"));
+			jos.write("dummy".getBytes());
+			jos.closeEntry();
+		}
+
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		Invoker invoker = new DefaultInvoker();
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, invoker, properties);
+
+		try {
+			template.readModel(jarFile);
+			fail("Expected IOException");
+		} catch (IOException e) {
+			assertNotNull(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConstructorAndFields() {
+		Invoker mockInvoker = mock(Invoker.class);
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+
+		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mockInvoker, properties);
+		assertNotNull(template);
+	}
+
+	@Test
+	public void testMavenInvokerHelper() {
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		Invoker invoker = mavenInvoker(properties);
+		assertNotNull(invoker);
+	}
+
+	@Test
+	public void testMavenInvokerHelperWithCustomLocalRepository() {
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		properties.setLocalRepository(System.getProperty("java.io.tmpdir"));
+		Invoker invoker = mavenInvoker(properties);
+		assertNotNull(invoker);
+	}
+
+	@Test
+	public void testMavenInvokerHelperWithCustomMavenExecutable() {
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		properties.setMavenExecutable("/usr/bin/mvn");
+		Invoker invoker = mavenInvoker(properties);
+		assertNotNull(invoker);
+	}
+
+	@Test
+	public void testMavenInvokerHelperWithCustomMavenHome() {
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		properties.setMavenHome("/opt/maven");
+		Invoker invoker = mavenInvoker(properties);
+		assertNotNull(invoker);
+	}
+
+	@Test
+	public void testMavenInvokerHelperWithNonExistentLocalRepo() {
+		CalibreInvokerProperties properties = new CalibreInvokerProperties();
+		String nonExistent = System.getProperty("java.io.tmpdir") + File.separator + "nonexistent-template-repo-" + System.currentTimeMillis();
+		properties.setLocalRepository(nonExistent);
+		Invoker invoker = mavenInvoker(properties);
+		assertNotNull(invoker);
+		// Cleanup
+		new File(nonExistent).delete();
 	}
 
 }
