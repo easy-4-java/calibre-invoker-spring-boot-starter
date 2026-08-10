@@ -18,7 +18,7 @@ package org.apache.maven.spring.boot.options;
 /**
  * Options for the {@code web2disk} Calibre command, which recursively downloads a website to a local directory.
  * https://manual.calibre-ebook.com/generated/en/web2disk.html
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class Web2diskOptions {

@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 /**
  * Auto-configuration that wires the Maven {@link Invoker} infrastructure: output and error handlers,
  * an invoker logger, a configured {@link DefaultInvoker} and the {@link CalibreInvokerTemplate} helper.
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Configuration

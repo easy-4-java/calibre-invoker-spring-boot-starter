@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
  * <p>Captures Maven invocation options (offline mode, debug, batch mode, profiles, reactor behaviour,
  * checksum policy, threads, etc.) as well as Calibre-specific flags, and can build a ready-to-use
  * {@link InvocationRequest} via {@link #newRequest()}.</p>
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(CalibreInvokerProperties.PREFIX)

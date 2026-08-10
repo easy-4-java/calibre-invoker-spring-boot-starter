@@ -18,7 +18,7 @@ package org.apache.maven.spring.boot.options;
 /**
  * Options for the {@code lrfviewer} Calibre command, the LRF e-book viewer.
  * https://manual.calibre-ebook.com/generated/en/lrfviewer.html
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class LrfviewerOptions {

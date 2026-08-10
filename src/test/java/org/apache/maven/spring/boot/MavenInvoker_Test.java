@@ -48,7 +48,7 @@ import org.junit.Test;
 /**
  * Tests for {@link CalibreInvokerProperties} and all options POJOs.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class MavenInvoker_Test {

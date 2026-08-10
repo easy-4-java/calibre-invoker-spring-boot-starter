@@ -38,7 +38,7 @@ import org.springframework.util.StringUtils;
  * Maven build helper based on the Maven Invoker API; depends on a local Maven installation.
  * <p>Provides convenience methods to install/deploy artifacts and execute arbitrary Maven goals, as well
  * as reading the {@link Model} from a packaged artifact's {@code pom.xml}.</p>
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class CalibreInvokerTemplate {

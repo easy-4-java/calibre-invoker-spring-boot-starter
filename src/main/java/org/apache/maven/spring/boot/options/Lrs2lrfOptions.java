@@ -18,7 +18,7 @@ package org.apache.maven.spring.boot.options;
 /**
  * Options for the {@code lrs2lrf} Calibre command, which compiles an LRS source file into an LRF e-book.
  * https://manual.calibre-ebook.com/generated/en/lrs2lrf.html
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class Lrs2lrfOptions {
