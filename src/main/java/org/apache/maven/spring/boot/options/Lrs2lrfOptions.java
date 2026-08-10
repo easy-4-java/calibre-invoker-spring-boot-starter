@@ -17,7 +17,7 @@ package org.apache.maven.spring.boot.options;
 
 /**
  * https://manual.calibre-ebook.com/generated/en/lrs2lrf.html
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class Lrs2lrfOptions {
 
