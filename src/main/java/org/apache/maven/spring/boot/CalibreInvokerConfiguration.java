@@ -25,11 +25,20 @@ import org.springframework.util.StringUtils;
 @Configuration
 @ConditionalOnClass({ DefaultInvoker.class })
 @EnableConfigurationProperties({ CalibreInvokerProperties.class })
+/**
+ * <p>Auto-configuration for CalibreInvokerConfiguration.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CalibreInvokerConfiguration {
 
 	/** Provide a default standard-output {@link InvocationOutputHandler} unless one already exists. @return a SystemOutHandler */
 	@Bean
 	@ConditionalOnMissingBean
+	/**
+	 * <p>Output handler.</p>
+	 * @return the result
+	 */
 	public InvocationOutputHandler outputHandler() {
 		return new SystemOutHandler();
 	}
@@ -37,6 +46,10 @@ public class CalibreInvokerConfiguration {
 	/** Provide a default error-output {@link InvocationOutputHandler} unless one already exists. @return a PrintStreamHandler writing to stderr */
 	@Bean
 	@ConditionalOnMissingBean
+	/**
+	 * <p>Error handler.</p>
+	 * @return the result
+	 */
 	public InvocationOutputHandler errorHandler() {
 		return new PrintStreamHandler(System.err, false);
 	}
@@ -44,6 +57,10 @@ public class CalibreInvokerConfiguration {
 	/** Provide a default {@link InvokerLogger} unless one already exists. @return a SystemOutLogger */
 	@Bean
 	@ConditionalOnMissingBean
+	/**
+	 * <p>Invoker logger.</p>
+	 * @return the result
+	 */
 	public InvokerLogger invokerLogger() {
 		return new SystemOutLogger();
 	}

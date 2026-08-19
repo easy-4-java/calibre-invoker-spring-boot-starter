@@ -30,10 +30,12 @@ public class Lrf2lrsOptions {
 	 */
 	private boolean dontOutputResources;
 
+	/** @return return whether dont output resources is enabled. */
 	public boolean isDontOutputResources() {
 		return dontOutputResources;
 	}
 
+	/** @param dontOutputResources set the dont output resources. */
 	public void setDontOutputResources(boolean dontOutputResources) {
 		this.dontOutputResources = dontOutputResources;
 	}

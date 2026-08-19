@@ -45,26 +45,32 @@ public class LrfviewerOptions {
 	 */
 	private boolean whiteBackground;
 
+	/** @return return whether disable hyphenation is enabled. */
 	public boolean isDisableHyphenation() {
 		return disableHyphenation;
 	}
 
+	/** @param disableHyphenation set the disable hyphenation. */
 	public void setDisableHyphenation(boolean disableHyphenation) {
 		this.disableHyphenation = disableHyphenation;
 	}
 
+	/** @return return whether visual debug is enabled. */
 	public boolean isVisualDebug() {
 		return visualDebug;
 	}
 
+	/** @param visualDebug set the visual debug. */
 	public void setVisualDebug(boolean visualDebug) {
 		this.visualDebug = visualDebug;
 	}
 
+	/** @return return whether white background is enabled. */
 	public boolean isWhiteBackground() {
 		return whiteBackground;
 	}
 
+	/** @param whiteBackground set the white background. */
 	public void setWhiteBackground(boolean whiteBackground) {
 		this.whiteBackground = whiteBackground;
 	}

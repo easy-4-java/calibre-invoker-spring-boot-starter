@@ -82,58 +82,72 @@ public class EbookPolishOptions {
 	 */
 	private boolean upgradeBook;
 
+	/** @return return whether compress images is enabled. */
 	public boolean isCompressImages() {
 		return compressImages;
 	}
 
+	/** @param compressImages set the compress images. */
 	public void setCompressImages(boolean compressImages) {
 		this.compressImages = compressImages;
 	}
 
+	/** @return return whether embed fonts is enabled. */
 	public boolean isEmbedFonts() {
 		return embedFonts;
 	}
 
+	/** @param embedFonts set the embed fonts. */
 	public void setEmbedFonts(boolean embedFonts) {
 		this.embedFonts = embedFonts;
 	}
 
+	/** @return return whether remove jacket is enabled. */
 	public boolean isRemoveJacket() {
 		return removeJacket;
 	}
 
+	/** @param removeJacket set the remove jacket. */
 	public void setRemoveJacket(boolean removeJacket) {
 		this.removeJacket = removeJacket;
 	}
 
+	/** @return return whether remove unused css is enabled. */
 	public boolean isRemoveUnusedCss() {
 		return removeUnusedCss;
 	}
 
+	/** @param removeUnusedCss set the remove unused css. */
 	public void setRemoveUnusedCss(boolean removeUnusedCss) {
 		this.removeUnusedCss = removeUnusedCss;
 	}
 
+	/** @return return whether smarten punctuation is enabled. */
 	public boolean isSmartenPunctuation() {
 		return smartenPunctuation;
 	}
 
+	/** @param smartenPunctuation set the smarten punctuation. */
 	public void setSmartenPunctuation(boolean smartenPunctuation) {
 		this.smartenPunctuation = smartenPunctuation;
 	}
 
+	/** @return return whether subset fonts is enabled. */
 	public boolean isSubsetFonts() {
 		return subsetFonts;
 	}
 
+	/** @param subsetFonts set the subset fonts. */
 	public void setSubsetFonts(boolean subsetFonts) {
 		this.subsetFonts = subsetFonts;
 	}
 
+	/** @return return whether upgrade book is enabled. */
 	public boolean isUpgradeBook() {
 		return upgradeBook;
 	}
 
+	/** @param upgradeBook set the upgrade book. */
 	public void setUpgradeBook(boolean upgradeBook) {
 		this.upgradeBook = upgradeBook;
 	}

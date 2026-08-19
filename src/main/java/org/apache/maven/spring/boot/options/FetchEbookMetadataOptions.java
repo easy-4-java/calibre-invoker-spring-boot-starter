@@ -35,10 +35,12 @@ public class FetchEbookMetadataOptions {
 	 */
 	private boolean allowedPlugin;
 
+	/** @return return whether allowed plugin is enabled. */
 	public boolean isAllowedPlugin() {
 		return allowedPlugin;
 	}
 
+	/** @param allowedPlugin set the allowed plugin. */
 	public void setAllowedPlugin(boolean allowedPlugin) {
 		this.allowedPlugin = allowedPlugin;
 	}

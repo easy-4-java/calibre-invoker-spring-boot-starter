@@ -37,6 +37,11 @@ import org.springframework.util.StringUtils;
  * @since 1.0.0
  */
 @ConfigurationProperties(CalibreInvokerProperties.PREFIX)
+/**
+ * <p>Auto-configuration for CalibreInvokerProperties.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CalibreInvokerProperties {
 
 	public static final String PREFIX = "maven.invoker";
@@ -241,234 +246,292 @@ public class CalibreInvokerProperties {
 	private boolean alsoMakeDependents = true;
 	private boolean batchMode = true;
 	
+	/** @return return whether also make is enabled. */
 	public boolean isAlsoMake() {
 		return alsoMake;
 	}
 
+	/** @param alsoMake set the also make. */
 	public void setAlsoMake(boolean alsoMake) {
 		this.alsoMake = alsoMake;
 	}
 
+	/** @return return whether also make dependents is enabled. */
 	public boolean isAlsoMakeDependents() {
 		return alsoMakeDependents;
 	}
 
+	/** @param alsoMakeDependents set the also make dependents. */
 	public void setAlsoMakeDependents(boolean alsoMakeDependents) {
 		this.alsoMakeDependents = alsoMakeDependents;
 	}
 
+	/** @return return whether batch mode is enabled. */
 	public boolean isBatchMode() {
 		return batchMode;
 	}
 
+	/** @param batchMode set the batch mode. */
 	public void setBatchMode(boolean batchMode) {
 		this.batchMode = batchMode;
 	}
 
+	/** @return return whether debug is enabled. */
 	public boolean isDebug() {
 		return debug;
 	}
 
+	/** @param debug set the debug. */
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
 
+	/** @return return the global settings. */
 	public String getGlobalSettings() {
 		return globalSettings;
 	}
 
+	/** @param globalSettings set the global settings. */
 	public void setGlobalSettings(String globalSettings) {
 		this.globalSettings = globalSettings;
 	}
 
+	/** @return return the global toolchains. */
 	public String getGlobalToolchains() {
 		return globalToolchains;
 	}
 
+	/** @param globalToolchains set the global toolchains. */
 	public void setGlobalToolchains(String globalToolchains) {
 		this.globalToolchains = globalToolchains;
 	}
 
+	/** @return return the global checksum policy. */
 	public CheckSumPolicy getGlobalChecksumPolicy() {
 		return globalChecksumPolicy;
 	}
 
+	/** @param globalChecksumPolicy set the global checksum policy. */
 	public void setGlobalChecksumPolicy(CheckSumPolicy globalChecksumPolicy) {
 		this.globalChecksumPolicy = globalChecksumPolicy;
 	}
 
+	/** @return return the java home. */
 	public String getJavaHome() {
 		return javaHome;
 	}
 
+	/** @param javaHome set the java home. */
 	public void setJavaHome(String javaHome) {
 		this.javaHome = javaHome;
 	}
 
+	/** @return return the local repository. */
 	public String getLocalRepository() {
 		return localRepository;
 	}
 
+	/** @param localRepository set the local repository. */
 	public void setLocalRepository(String localRepository) {
 		this.localRepository = localRepository;
 	}
 
+	/** @return return the maven executable. */
 	public String getMavenExecutable() {
 		return mavenExecutable;
 	}
 
+	/** @param mavenExecutable set the maven executable. */
 	public void setMavenExecutable(String mavenExecutable) {
 		this.mavenExecutable = mavenExecutable;
 	}
 
+	/** @return return the maven home. */
 	public String getMavenHome() {
 		return mavenHome;
 	}
 
+	/** @param mavenHome set the maven home. */
 	public void setMavenHome(String mavenHome) {
 		this.mavenHome = mavenHome;
 	}
 
+	/** @return return the maven opts. */
 	public String getMavenOpts() {
 		return mavenOpts;
 	}
 
+	/** @param mavenOpts set the maven opts. */
 	public void setMavenOpts(String mavenOpts) {
 		this.mavenOpts = mavenOpts;
 	}
 
+	/** @return return the maven repositorys. */
 	public Map<String, String> getMavenRepositorys() {
 		return mavenRepositorys;
 	}
 
+	/** @param mavenRepositorys set the maven repositorys. */
 	public void setMavenRepositorys(Map<String, String> mavenRepositorys) {
 		this.mavenRepositorys = mavenRepositorys;
 	}
 
+	/** @return return whether non plugin updates is enabled. */
 	public boolean isNonPluginUpdates() {
 		return nonPluginUpdates;
 	}
 
+	/** @param nonPluginUpdates set the non plugin updates. */
 	public void setNonPluginUpdates(boolean nonPluginUpdates) {
 		this.nonPluginUpdates = nonPluginUpdates;
 	}
 
+	/** @return return whether offline is enabled. */
 	public boolean isOffline() {
 		return offline;
 	}
 
+	/** @param offline set the offline. */
 	public void setOffline(boolean offline) {
 		this.offline = offline;
 	}
 
+	/** @return return the properties. */
 	public Properties getProperties() {
 		return properties;
 	}
 
+	/** @param properties set the properties. */
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
 
+	/** @return return the pom filename. */
 	public String getPomFilename() {
 		return pomFilename;
 	}
 
+	/** @param pomFilename set the pom filename. */
 	public void setPomFilename(String pomFilename) {
 		this.pomFilename = pomFilename;
 	}
 
+	/** @return return the profiles. */
 	public List<String> getProfiles() {
 		return profiles;
 	}
 
+	/** @param profiles set the profiles. */
 	public void setProfiles(List<String> profiles) {
 		this.profiles = profiles;
 	}
 
+	/** @return return the projects. */
 	public List<String> getProjects() {
 		return projects;
 	}
 
+	/** @param projects set the projects. */
 	public void setProjects(List<String> projects) {
 		this.projects = projects;
 	}
 
+	/** @return return the reactor failure behavior. */
 	public ReactorFailureBehavior getReactorFailureBehavior() {
 		return reactorFailureBehavior;
 	}
 
+	/** @param reactorFailureBehavior set the reactor failure behavior. */
 	public void setReactorFailureBehavior(ReactorFailureBehavior reactorFailureBehavior) {
 		this.reactorFailureBehavior = reactorFailureBehavior;
 	}
 
+	/** @return return whether recursive is enabled. */
 	public boolean isRecursive() {
 		return recursive;
 	}
 
+	/** @param recursive set the recursive. */
 	public void setRecursive(boolean recursive) {
 		this.recursive = recursive;
 	}
 
+	/** @return return the resume from. */
 	public String getResumeFrom() {
 		return resumeFrom;
 	}
 
+	/** @param resumeFrom set the resume from. */
 	public void setResumeFrom(String resumeFrom) {
 		this.resumeFrom = resumeFrom;
 	}
 
+	/** @return return whether shell environment inherited is enabled. */
 	public boolean isShellEnvironmentInherited() {
 		return shellEnvironmentInherited;
 	}
 
+	/** @param shellEnvironmentInherited set the shell environment inherited. */
 	public void setShellEnvironmentInherited(boolean shellEnvironmentInherited) {
 		this.shellEnvironmentInherited = shellEnvironmentInherited;
 	}
 
+	/** @return return whether show errors is enabled. */
 	public boolean isShowErrors() {
 		return showErrors;
 	}
 
+	/** @param showErrors set the show errors. */
 	public void setShowErrors(boolean showErrors) {
 		this.showErrors = showErrors;
 	}
 
+	/** @return return whether show version is enabled. */
 	public boolean isShowVersion() {
 		return showVersion;
 	}
 
+	/** @param showVersion set the show version. */
 	public void setShowVersion(boolean showVersion) {
 		this.showVersion = showVersion;
 	}
 
+	/** @return return the shell environments. */
 	public Map<String, String> getShellEnvironments() {
 		return shellEnvironments;
 	}
 
+	/** @param shellEnvironments set the shell environments. */
 	public void setShellEnvironments(Map<String, String> shellEnvironments) {
 		this.shellEnvironments = shellEnvironments;
 	}
 	
+	/** @return return the threads. */
 	public int getThreads() {
 		return threads;
 	}
 
+	/** @param threads set the threads. */
 	public void setThreads(int threads) {
 		this.threads = threads;
 	}
 
+	/** @return return whether update snapshots is enabled. */
 	public boolean isUpdateSnapshots() {
 		return updateSnapshots;
 	}
 
+	/** @param updateSnapshots set the update snapshots. */
 	public void setUpdateSnapshots(boolean updateSnapshots) {
 		this.updateSnapshots = updateSnapshots;
 	}
 
+	/** @return return the user settings. */
 	public String getUserSettings() {
 		return userSettings;
 	}
 
+	/** @param userSettings set the user settings. */
 	public void setUserSettings(String userSettings) {
 		this.userSettings = userSettings;
 	}

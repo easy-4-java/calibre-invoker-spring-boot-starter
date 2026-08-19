@@ -30,10 +30,12 @@ public class Web2diskOptions {
 	 */
 	private boolean dontDownloadStylesheets;
 
+	/** @return return whether dont download stylesheets is enabled. */
 	public boolean isDontDownloadStylesheets() {
 		return dontDownloadStylesheets;
 	}
 
+	/** @param dontDownloadStylesheets set the dont download stylesheets. */
 	public void setDontDownloadStylesheets(boolean dontDownloadStylesheets) {
 		this.dontDownloadStylesheets = dontDownloadStylesheets;
 	}

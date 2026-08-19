@@ -50,34 +50,42 @@ public class EbookViewerOptions {
 	 */
 	private boolean raiseWindow;
 
+	/** @return return whether continue reading is enabled. */
 	public boolean isContinueReading() {
 		return continueReading;
 	}
 
+	/** @param continueReading set the continue reading. */
 	public void setContinueReading(boolean continueReading) {
 		this.continueReading = continueReading;
 	}
 
+	/** @return return whether debug javascript is enabled. */
 	public boolean isDebugJavascript() {
 		return debugJavascript;
 	}
 
+	/** @param debugJavascript set the debug javascript. */
 	public void setDebugJavascript(boolean debugJavascript) {
 		this.debugJavascript = debugJavascript;
 	}
 
+	/** @return return whether fullscreen is enabled. */
 	public boolean isFullscreen() {
 		return fullscreen;
 	}
 
+	/** @param fullscreen set the fullscreen. */
 	public void setFullscreen(boolean fullscreen) {
 		this.fullscreen = fullscreen;
 	}
 
+	/** @return return whether raise window is enabled. */
 	public boolean isRaiseWindow() {
 		return raiseWindow;
 	}
 
+	/** @param raiseWindow set the raise window. */
 	public void setRaiseWindow(boolean raiseWindow) {
 		this.raiseWindow = raiseWindow;
 	}

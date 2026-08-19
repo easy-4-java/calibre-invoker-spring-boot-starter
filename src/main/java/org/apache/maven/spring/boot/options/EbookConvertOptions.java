@@ -66,10 +66,12 @@ public class EbookConvertOptions {
 	 */
 	private boolean detach;
 
+	/** @return return whether detach is enabled. */
 	public boolean isDetach() {
 		return detach;
 	}
 
+	/** @param detach set the detach. */
 	public void setDetach(boolean detach) {
 		this.detach = detach;
 	}

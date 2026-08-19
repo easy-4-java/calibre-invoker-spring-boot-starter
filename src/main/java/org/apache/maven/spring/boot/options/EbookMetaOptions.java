@@ -69,34 +69,42 @@ public class EbookMetaOptions {
 	 */
 	private boolean titleSort;
 
+	/** @return return whether author sort is enabled. */
 	public boolean isAuthorSort() {
 		return authorSort;
 	}
 
+	/** @param authorSort set the author sort. */
 	public void setAuthorSort(boolean authorSort) {
 		this.authorSort = authorSort;
 	}
 
+	/** @return return whether from opf is enabled. */
 	public boolean isFromOpf() {
 		return fromOpf;
 	}
 
+	/** @param fromOpf set the from opf. */
 	public void setFromOpf(boolean fromOpf) {
 		this.fromOpf = fromOpf;
 	}
 
+	/** @return return whether get cover is enabled. */
 	public boolean isGetCover() {
 		return getCover;
 	}
 
+	/** @param getCover set the get cover. */
 	public void setGetCover(boolean getCover) {
 		this.getCover = getCover;
 	}
 
+	/** @return return whether title sort is enabled. */
 	public boolean isTitleSort() {
 		return titleSort;
 	}
 
+	/** @param titleSort set the title sort. */
 	public void setTitleSort(boolean titleSort) {
 		this.titleSort = titleSort;
 	}

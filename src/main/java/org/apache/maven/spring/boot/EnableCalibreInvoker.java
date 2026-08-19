@@ -34,6 +34,11 @@ import org.springframework.context.annotation.Import;
 @Documented
 @Inherited
 @Import({ CalibreInvokerConfiguration.class })
+/**
+ * <p>Auto-configuration for EnableCalibreInvoker.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public @interface EnableCalibreInvoker {
 
 }
