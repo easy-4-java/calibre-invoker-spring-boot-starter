@@ -16,125 +16,69 @@
 package org.apache.maven.spring.boot;
 
 import java.io.File;
+import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
+import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.InvokerLogger;
-import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.apache.maven.shared.invoker.PrintStreamHandler;
-import org.apache.maven.shared.invoker.SystemOutHandler;
-import org.apache.maven.shared.invoker.SystemOutLogger;
-import org.junit.Test;
-import org.springframework.util.StringUtils;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
-/**
- * https://www.sourcetrail.com/blog/how_to_integrate_maven_into_your_own_java_tool/
- */
-public class MavenInvokerTemplate_Test {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-	InvocationOutputHandler outputHandler = new SystemOutHandler();
-	InvocationOutputHandler errorHandler = new PrintStreamHandler(System.err, false);
-	InvokerLogger invokerLogger = new SystemOutLogger();
+class MavenInvokerTemplate_Test {
 
-	public Invoker mavenInvoker(CalibreInvokerProperties properties) {
+    @Test
+    void buildsInstallDeployAndExecuteRequestsWithoutLaunchingMaven() throws Exception {
+        InvocationOutputHandler output = mock(InvocationOutputHandler.class);
+        InvocationOutputHandler error = mock(InvocationOutputHandler.class);
+        Invoker invoker = mock(Invoker.class);
+        InvocationResult result = mock(InvocationResult.class);
+        when(invoker.execute(any(InvocationRequest.class))).thenReturn(result);
+        CalibreInvokerTemplate template = new CalibreInvokerTemplate(output, error, invoker,
+                new CalibreInvokerProperties());
 
-		Invoker invoker = new DefaultInvoker();
+        assertSame(result, template.install("work", "book.jar", "example", "book", "1.0", "jar", true, false));
+        assertSame(result, template.deploy("work", "book.jar", "example", "book", "1.0", "jar",
+                "https://repo.example.test", "releases"));
+        assertSame(result, template.execute(new File("work"), "clean", "verify"));
 
-		// Sets the handler used to capture the error output from the Maven build.
-		invoker.setErrorHandler(errorHandler);
-		// Sets the path to the base directory of the local repository to use for the
-		// Maven invocation.
-		if (StringUtils.hasText(properties.getLocalRepository())) {
-			File localRepositoryDirectory = new File(properties.getLocalRepository());
-			if (localRepositoryDirectory.exists() && localRepositoryDirectory.isDirectory()) {
-				invoker.setLocalRepositoryDirectory(localRepositoryDirectory);
-			} else {
-				localRepositoryDirectory.mkdir();
-				invoker.setLocalRepositoryDirectory(localRepositoryDirectory);
-			}
-		} else {
-			File localRepositoryDirectory = new File(FileUtils.getUserDirectory(),
-					".m2" + File.separator + "repository");
-			if (!localRepositoryDirectory.exists()) {
-				localRepositoryDirectory.mkdir();
-			}
-			invoker.setLocalRepositoryDirectory(localRepositoryDirectory);
-		}
-		// Sets the logger used by this invoker to output diagnostic messages.
-		invoker.setLogger(invokerLogger);
-		//
-		if (StringUtils.hasText(properties.getMavenExecutable())) {
-			invoker.setMavenExecutable(new File(properties.getMavenExecutable()));
-		}
-		// Sets the path to the base directory of the Maven installation used to invoke
-		// Maven.
-		if (StringUtils.hasText(properties.getMavenHome())) {
-			invoker.setMavenHome(new File(properties.getMavenHome()));
-		}
-		// Sets the handler used to capture the standard output from the Maven build.
-		invoker.setOutputHandler(outputHandler);
+        ArgumentCaptor<InvocationRequest> requests = ArgumentCaptor.forClass(InvocationRequest.class);
+        verify(invoker, times(3)).execute(requests.capture());
+        InvocationRequest install = requests.getAllValues().get(0);
+        assertEquals(new File("work"), install.getBaseDirectory());
+        assertEquals(List.of("install:install-file", "-Dfile=book.jar", "-DgroupId=example",
+                "-DartifactId=book", "-Dversion=1.0", "-Dpackaging=jar",
+                "-DgeneratePom=true", "-DcreateChecksum=false"), install.getGoals());
+        assertSame(output, install.getOutputHandler(null));
+        assertSame(error, install.getErrorHandler(null));
 
-		return invoker;
-	}
+        InvocationRequest deploy = requests.getAllValues().get(1);
+        assertEquals(new File("work"), deploy.getBaseDirectory());
+        assertEquals(List.of("deploy:deploy-file", "-DgroupId=example", "-DartifactId=book",
+                "-Dversion=1.0", "-Dpackaging=jar", "-Dfile=book.jar",
+                "-Durl=https://repo.example.test", "-DrepositoryId=releases"), deploy.getGoals());
+        InvocationRequest execute = requests.getAllValues().get(2);
+        assertEquals(new File("work"), execute.getBaseDirectory());
+        assertEquals(List.of("clean", "verify"), execute.getGoals());
+    }
 
-	@Test
-	public void testInstall() throws MavenInvocationException {
-
-		CalibreInvokerProperties properties = new CalibreInvokerProperties();
-		properties.setNonPluginUpdates(true);
-		properties.setUpdateSnapshots(false);
-		properties.setMavenHome("D:\\Java\\maven\\apache-maven-3.5.3");
-		properties.setLocalRepository("E:\\Java\\.m2\\repository");
-
-		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mavenInvoker(properties),
-				properties);
-
-		// InvocationResult result = template.install("D:\\", "p6spy-3.7.0.jar", "p6spy", "p6spy", "3.7.0-xx", "jar", true, true);
-		InvocationResult result = template.install( "D:\\p6spy-3.7.0.jar", "p6spy", "p6spy", "3.7.0-xx", "jar", true, true);
-
-		System.out.println("ExitCode:" + result.getExitCode());
-
-	}
-
-	// @Test
-	public void testDeploy() throws MavenInvocationException {
-
-		CalibreInvokerProperties properties = new CalibreInvokerProperties();
-
-		properties.setMavenHome("D:\\Java\\maven\\apache-maven-3.5.3");
-
-		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mavenInvoker(properties),
-				properties);
-		
-		InvocationResult result = template.deploy("D:\\", "D:\\p6spy-3.7.0.jar", "p6spy", "p6spy", "3.7.0-xx", "jar", 
-				"-Durl=http://127.0.0.1:8082/nexus/content/repositories/thirdparty/", "-DrepositoryId=thirdparty");
-		
-		/*InvocationResult result = template.deploy("D:\\p6spy-3.7.0.jar", "p6spy", "p6spy", "D:\\3.7.0-xx", "jar", 
-				"-Durl=http://127.0.0.1:8082/nexus/content/repositories/thirdparty/", "thirdparty");*/
-
-		System.out.println("ExitCode:" + result.getExitCode());
-
-	}
-
-	public void testExecute() throws MavenInvocationException {
-
-		CalibreInvokerProperties properties = new CalibreInvokerProperties();
-
-		properties.setMavenHome("D:\\Java\\maven\\apache-maven-3.5.3");
-
-		CalibreInvokerTemplate template = new CalibreInvokerTemplate(outputHandler, errorHandler, mavenInvoker(properties),
-				properties);
-
-		InvocationResult result = template.execute("D:\\", "deploy:deploy-file", "-DgroupId=p6spy",
-				"-DartifactId=p6spy", "-Dversion=3.7.0-xx", "-Dpackaging=jar", "-Dfile=p6spy-3.7.0.jar",
-				"-Durl=http://10.71.19.153:8081/nexus/content/repositories/thirdparty/",
-				"-DrepositoryId=nexus-thirdparty");
-
-		System.out.println("ExitCode:" + result.getExitCode());
-
-	}
-
+    @Test
+    void convenienceOverloadsLeaveBaseDirectoryUnset() throws Exception {
+        Invoker invoker = mock(Invoker.class);
+        when(invoker.execute(any(InvocationRequest.class))).thenReturn(mock(InvocationResult.class));
+        CalibreInvokerTemplate template = new CalibreInvokerTemplate(null, null, invoker,
+                new CalibreInvokerProperties());
+        template.install("book.jar", "example", "book", "1.0", "jar", false, true);
+        template.deploy("book.jar", "example", "book", "1.0", "jar", "https://repo.example.test", "releases");
+        template.execute("work", "test");
+        ArgumentCaptor<InvocationRequest> requests = ArgumentCaptor.forClass(InvocationRequest.class);
+        verify(invoker, times(3)).execute(requests.capture());
+        assertNull(requests.getAllValues().get(0).getBaseDirectory());
+        assertNull(requests.getAllValues().get(1).getBaseDirectory());
+        assertEquals(new File("work"), requests.getAllValues().get(2).getBaseDirectory());
+    }
 }
