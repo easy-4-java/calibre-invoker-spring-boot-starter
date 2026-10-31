@@ -15,87 +15,87 @@
  */
 package org.apache.maven.spring.boot;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.junit.Test;
+import org.apache.maven.shared.invoker.InvocationOutputHandler;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.InvokerLogger;
+import org.apache.maven.spring.boot.options.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-/**
- * TODO
- * 
- * @author <a href="https://github.com/loong10k">Loong Wan</a>
- */
+import static org.junit.jupiter.api.Assertions.*;
 
-public class MavenModel_Test {
+class MavenModel_Test {
 
-	@Test
-	public void testTheVersionClass() {
-		System.out.println("Implementation Title:" + this.getClass().getPackage().getImplementationTitle());
-		System.out.println("Implementation Vendor:" + this.getClass().getPackage().getImplementationVendor());
-		System.out.println("Implementation Version:" + this.getClass().getPackage().getImplementationVersion());
-		System.out.println("Specification Tile:" + this.getClass().getPackage().getSpecificationTitle());
-		System.out.println("Specification Vendor:" + this.getClass().getPackage().getSpecificationVendor());
-		System.out.println("Specification Version:" + this.getClass().getPackage().getSpecificationVersion());
-	}
+    @TempDir Path home;
 
-	static class jarFilter implements FileFilter {
-		public boolean accept(File pathName) {
-			String upcase = pathName.getName().toUpperCase();
-			return upcase.endsWith(".JAR");
-		}
-	}
-	
-	@Test
-	public void testname() throws Exception {
+    @Test
+    void readsPomEmbeddedInJarAndRejectsJarWithoutPom() throws Exception {
+        Path withPom = home.resolve("with-pom.jar");
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(withPom))) {
+            zip.putNextEntry(new ZipEntry("META-INF/maven/example/book/pom.xml"));
+            zip.write(("<project><modelVersion>4.0.0</modelVersion><groupId>example</groupId>"
+                    + "<artifactId>book</artifactId><version>1.0</version></project>")
+                    .getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+        }
+        CalibreInvokerTemplate template = new CalibreInvokerTemplate(null, null, null,
+                new CalibreInvokerProperties());
+        Model model = template.readModel(withPom.toFile());
+        assertEquals("example", model.getGroupId());
+        assertEquals("book", model.getArtifactId());
+        assertEquals("1.0", model.getVersion());
 
-		MavenXpp3Reader reader = new MavenXpp3Reader();
+        Path withoutPom = home.resolve("without-pom.jar");
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(withoutPom))) {
+            zip.putNextEntry(new ZipEntry("book.txt"));
+            zip.write("content".getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+        }
+        assertThrows(IOException.class, () -> template.readModel(withoutPom.toFile()));
+    }
 
-		try (ZipFile zipFile = new ZipFile("D:\\commons-pool-1.6.jar")) {
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
-				//System.out.println(entry.getName());
-				if (entry.getName().endsWith("pom.xml")) {
+    @Test
+    void createsInvokerAndTemplateFromConfiguration() {
+        CalibreInvokerConfiguration configuration = new CalibreInvokerConfiguration();
+        InvocationOutputHandler output = configuration.outputHandler();
+        InvocationOutputHandler error = configuration.errorHandler();
+        InvokerLogger logger = configuration.invokerLogger();
+        CalibreInvokerProperties properties = new CalibreInvokerProperties();
+        properties.setLocalRepository(home.resolve("repository").toString());
+        Invoker invoker = configuration.mavenInvoker(output, error, logger, properties);
+        assertNotNull(invoker);
+        assertNotNull(configuration.mavenInvokerTemplate(output, error, invoker, properties));
+        assertTrue(home.resolve("repository").toFile().isDirectory());
+    }
 
-					InputStream input = zipFile.getInputStream(entry);
-					Model model = reader.read(new InputStreamReader(input));
-
-					System.out.println("Id :" + model.getId());
-					System.out.println("GroupId :" + model.getGroupId());
-					System.out.println("ArtifactId :" + model.getArtifactId());
-					System.out.println("Version :" + model.getVersion());
-
-				}
-			}
-		} catch (IOException ex) {
-			System.out.println(ex.toString());
-		}
-
-		/*
-		 * Model model;
-		 * 
-		 * 
-		 * 
-		 * if ((new File("pom.xml")).exists()) model = reader.read(new
-		 * FileReader("pom.xml")); else model = reader.read(new
-		 * InputStreamReader(this.getClass().getResourceAsStream(
-		 * "/META-INF/maven/de.scrum-master.stackoverflow/aspectj-introduce-method/pom.xml"
-		 * ))); System.out.println(model.getId());
-		 * System.out.println(model.getGroupId());
-		 * System.out.println(model.getArtifactId());
-		 * System.out.println(model.getVersion());
-		 */
-
-	}
+    @Test
+    void calibreOptionBeansExposeWritableBooleanFlags() throws Exception {
+        Class<?>[] optionTypes = { EbookConvertOptions.class, EbookEditOptions.class,
+                EbookMetaOptions.class, EbookPolishOptions.class, EbookViewerOptions.class,
+                FetchEbookMetadataOptions.class, Lrf2lrsOptions.class,
+                LrfviewerOptions.class, Lrs2lrfOptions.class, Web2diskOptions.class };
+        int flags = 0;
+        for (Class<?> type : optionTypes) {
+            Object options = type.getDeclaredConstructor().newInstance();
+            for (PropertyDescriptor property : Introspector.getBeanInfo(type).getPropertyDescriptors()) {
+                if (property.getPropertyType() != boolean.class || property.getWriteMethod() == null
+                        || property.getReadMethod() == null) continue;
+                assertEquals(false, property.getReadMethod().invoke(options), type.getSimpleName() + "." + property.getName());
+                property.getWriteMethod().invoke(options, true);
+                assertEquals(true, property.getReadMethod().invoke(options), type.getSimpleName() + "." + property.getName());
+                flags++;
+            }
+        }
+        assertTrue(flags >= 20, "expected to check the Calibre option binding contract");
+    }
 }
